@@ -1,3 +1,20 @@
 %! TEX root = **/000-main.tex
-\chapter{Primal Formulation}
+\chapter{Formulation}
+% Implement the primal and dual quadratic formulation of the support vector machine in AMPL.
+
+\section{Primal}
+
+The primal formulation of the SVM problem is the following:
+\begin{align*}
+\min_{w,b} & \frac{1}{2} \|w\|^2 \\
+\text{s.t.} & y_i(w^Tx_i + b) \geq 1, \quad i = 1, \ldots, n
+\end{align*}
+where $w$ is the weight vector, $b$ is the bias, $x_i$ is the $i$-th data point
+and $y_i$ is the label of the $i$-th data point.
+
+\subsection{AMPL Model}
+
+We can model this in AMPL as follows:
+
+\inputminted{ampl}{../ampl/primal.ampl}
 

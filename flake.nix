@@ -64,6 +64,7 @@
                     root = ./.;
                     include = [
                       "document"
+                      "ampl"
                     ];
                   };
                   TEXMFHOME = "./cache";
