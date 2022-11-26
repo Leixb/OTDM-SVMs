@@ -1,20 +1,64 @@
 %! TEX root = **/000-main.tex
-\chapter{Formulation}
+\chapter{Formulation of the Support Vector Machine}
+\chaptermark{Formulation of the SVM}
 % Implement the primal and dual quadratic formulation of the support vector machine in AMPL.
 
-\section{Primal}
+\section{Primal}\label{sec:primal}
 
-The primal formulation of the SVM problem is the following:
+Given:
+\begin{alignat*}{3}
+	A                                 & = \begin{bmatrix}
+		                                      \phi\left(x_1\right)^T \\
+		                                      \vdots                 \\
+		                                      \phi\left(x_n\right)^T
+	                                      \end{bmatrix}
+	\in \mathbb{R}^{m \times n},\quad &
+	Y                                 & = \begin{bmatrix}
+		                                      y_1             \\
+		                                       & \ddots       \\
+		                                       &        & y_m
+	                                      \end{bmatrix},\quad       &
+	e                                 & = \begin{bmatrix}
+		                                      1_1    \\
+		                                      \vdots \\
+		                                      1_m
+	                                      \end{bmatrix}
+\end{alignat*}
+
+The primal formulation of the SVM problem is:
 \begin{align*}
-\min_{w,b} & \frac{1}{2} \|w\|^2 \\
-\text{s.t.} & y_i(w^Tx_i + b) \geq 1, \quad i = 1, \ldots, n
+	\min_{
+		(w,\gamma,s) \in \mathbb{R}^{n+m+1}
+	}
+	\frac{1}{2} w^T w + \nu e^T s                        \\[1.5em]
+	\text{subj. to: } & -Y(Aw + \gamma e) - s + e \leq 0 \\
+	                  & -s \leq 0
 \end{align*}
-where $w$ is the weight vector, $b$ is the bias, $x_i$ is the $i$-th data point
-and $y_i$ is the label of the $i$-th data point.
+where $w$ is the weight vector, $\gamma$ is the bias, $s$ is the slack variable,
+and $\nu$ is the regularization parameter.
 
-\subsection{AMPL Model}
+\pagebreak
+\subsection{AMPL Primal model}
 
-We can model this in AMPL as follows:
+Since AMPL does not support matrix operations,
+we need to formulate the problem equivalent
+problem in scalar form.
 
-\inputminted{ampl}{../ampl/primal.ampl}
+The scalar form of the primal problem is:
+\begin{align*}
+    \span\min_{
+        (w_i,\gamma,s_i) \in \mathbb{R}^{n+m+1}
+    }
+    \frac{1}{2} \sum_{j=1}^n w_j^2 + \nu \sum_{i=1}^m s_i
+    \\[1.5em]
+    \text{subj. to: } & -Y_i \left( \sum_{j=1}^n A_{ij} w_j + \gamma \right) - s_i + 1 \leq 0 \qquad \forall i \in \{1,\ldots,m\} \\
+                      & -s_i \leq 0 \qquad \forall i \in \{1,\ldots,m\}
+\end{align*}
+
+
+Using this formulation, the translation to AMPL is straightforward:
+\begin{listing}[H]
+    \caption{AMPL Primal SVM model (\texttt{primal.mod})}
+    \inputminted{ampl}{../ampl/primal.mod}
+\end{listing}
 

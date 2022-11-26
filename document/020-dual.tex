@@ -3,16 +3,115 @@
 \section{Dual}
 % Implement the primal and dual quadratic formulation of the support vector machine in AMPL.
 
-The dual formulation of the SVM problem is the following:
+To obtain the dual formulation from
+the primal from \cref{sec:primal}, we
+introduce the Lagrangian function $L$:
 \begin{align*}
-\max_{\alpha} & \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j x_i^T x_j \\
-\text{s.t.} & \alpha_i \geq 0, \quad i = 1, \ldots, n \\
-& \sum_{i=1}^n \alpha_i y_i = 0
+    L(w,\gamma,s,\lambda,\mu)
+    &= \frac{1}{2} w^T w + \nu e^T s -
+    % \underbrace{
+    \lambda^T \left(Y(Aw + \gamma e) + s - e\right) - \mu^T s
+% }_{\text{Duality Gap}}
+    % \\
+    % &= \frac{1}{2} \sum_{i=1}^n w_i^2 + \nu \sum_{i=1}^m s_i + \sum_{i=1}^m \lambda_i \left(-y_i \left(\phi\left(x_i\right)^T w + \gamma\right) - s_i + 1\right) - \sum_{i=1}^m \mu_i s_i
+    % &= \frac{1}{2} \sum_{i=1}^n w_i^2 + \nu \sum_{i=1}^m s_i - \sum_{i=1}^m \lambda_i \left(y_i \left(\sum_{j=1}^n \phi_j\left(x_i\right) w_j + \gamma\right) + s_i - 1\right) - \sum_{i=1}^m \mu_i s_i
 \end{align*}
-where $\alpha_i$ is the Lagrange multiplier associated with the $i$-th data point.
+Where $\lambda$ and $\mu$ are the Lagrange multipliers.
 
+We can then obtain the dual formulation by using
+Wolfe duality:
+\begin{align*}
+    \max_{w,\gamma,s,\lambda,\mu} L(w,\gamma,s,\lambda,\mu)
+    &= \frac{1}{2} w^T w + \nu e^T s - \lambda^T \left(Y(Aw + \gamma e) + s - e\right) - \mu^T s \\
+    \\
+    \text{ subj. to: } \\
+    \nabla_w L(w,\gamma,s,\lambda,\mu) &= w - \left(\lambda^T YA\right)^T = 0
+    \implies w = \left(\lambda^T YA\right)^T \tag{c.1}\label{c1} \\
+    \nabla_\gamma L(w,\gamma,s,\lambda,\mu) &= \lambda^T Ye = 0  \tag{c.2}\label{c2}\\
+    \nabla_s L(w,\gamma,s,\lambda,\mu) &= \nu e - \lambda + \mu = 0  \tag{c.3}\label{c3}\\
+                                       & \lambda \geq 0,\quad \mu \geq 0
+\end{align*}
+
+Using that $w = \left(\lambda^T YA\right)^T$, we can
+rewrite the objective function as follows:
+\begin{align*}
+    % \max_{\lambda,\mu}
+    & \frac{1}{2}
+    \lambda^T YA \left(\lambda^T YA\right)^T
+    + \nu e^T s
+    + \lambda^T \left(-Y(A\lambda Y^T A^T + \gamma e) - s + e\right)
+    - \mu^T s
+    \\
+    % &= \frac{1}{2}
+    % \lambda^T YA \lambda Y^T A^T
+    % + \nu e^T s
+    % -\lambda^TY(A\lambda Y^T A^T + \gamma e)
+    % -\lambda^T s
+    % +\lambda^T e
+    % - \mu^T s \\
+    &= \frac{1}{2}
+    \lambda^T YA \lambda Y^T A^T
+    + \nu e^T s
+    - \lambda^T Y A \lambda Y^T A^T
+    - \lambda^T Y \gamma e
+    -\lambda^T s
+    +\lambda^T e
+    - \mu^T s \\
+    % &= -\frac{1}{2}
+    % \lambda^T Y A \lambda Y^T A^T
+    % + \nu e^T s
+    % - \lambda^T Y \gamma e
+    % -\lambda^T s
+    % +\lambda^T e
+    % - \mu^T s \\
+    &= - \frac{1}{2}
+    \lambda^T Y A \lambda Y^T A^T
+    + \lambda^T e
+    - \cancelto{0 \text{ by }\ref{c2}}{\lambda^T Y \gamma e \vphantom{\frac{1}{2}}}
+    + \cancelto{0 \text{ by }\ref{c3}}{(\nu e^T
+       - \lambda^T 
+   - \mu^T) s}
+    \\
+    &= - \frac{1}{2}
+    \lambda^T Y A \lambda Y^T A^T
+    + \lambda^T e
+\end{align*}
+
+Finally, using that $\mu \geq 0$ and $\mu = \nu e - \lambda$,
+we get that $\lambda \leq \nu e$ and since $e$ is a vector of ones,
+$\lambda \leq \nu$. We can thus formulate the dual problem as follows:
+\begin{align*}
+    \max_{\lambda}\; & \lambda^T e - \frac{1}{2} \lambda^T Y A \lambda Y^T A^T
+    \\
+    \text{ subj. to: } \\
+    \lambda^T Y e & = 0 \\
+    0 \leq \lambda & \leq \nu
+\end{align*}
+
+
+\pagebreak
 \subsection{AMPL Model}
+
+As we mentioned in \cref{sec:primal}, we need to use
+the scalar form of the dual formulation to be able to
+implement it in AMPL.
+
+The scalar form of the dual formulation is:
+\begin{align*}
+    \max_{\lambda}\; & \sum_{i=1}^m \lambda_i - 
+    \mathlarger{\frac{1}{2}
+    \sum_{i=1}^m}
+    \sum_{j=1}^m \lambda_i \lambda_j y_i y_j K_{ij}
+    \\
+    \text{ subj. to: } \\
+    \sum_{i=1}^m \lambda_i y_i & = 0 \\
+    0 \leq \lambda_i & \leq \nu \qquad \forall i \in \{1,\ldots,m\}
+\end{align*}
+where $K = AA^T$.
 
 We can model this in AMPL as follows:
 
-\inputminted{ampl}{../ampl/dual.ampl}
+\begin{listing}[H]
+    \caption{AMPL Dual SVM model (\texttt{dual.mod})}
+    \inputminted{ampl}{../ampl/dual.mod}
+\end{listing}
