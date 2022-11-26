@@ -7,14 +7,14 @@ stdenv.mkDerivation {
   pname = "ampl";
   version = "2022-08-21";
 
-  buildInputs = [ autoPatchelfHook ];
+  buildInputs = [ stdenv.cc.cc autoPatchelfHook ];
 
-  src = ./ampl;
+  src = ./ampl_linux-intel64;
 
   unpackPhase = ''
     runHook preUnpack
 
-    cp $src ampl
+    cp $src/* .
 
     runHook postUnpack
   '';
@@ -22,8 +22,9 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin
-    cp ampl $out/bin
+    mkdir -p $out/{bin,lib}
+    cp ampl cplex gurobi $out/bin
+    cp lib* $out/lib
 
     runHook postInstall
   '';
