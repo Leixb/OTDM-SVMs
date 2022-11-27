@@ -90,7 +90,7 @@ $\lambda \leq \nu$. We can thus formulate the dual problem as follows:
 
 
 \pagebreak
-\subsection{AMPL Model}
+\subsection{AMPL Dual Model}
 
 As we mentioned in \cref{sec:primal}, we need to use
 the scalar form of the dual formulation to be able to
@@ -110,8 +110,10 @@ The scalar form of the dual formulation is:
 where $K = AA^T$.
 
 We can model this in AMPL as follows:
-
 \begin{listing}[H]
     \caption{AMPL Dual SVM model (\texttt{dual.mod})}
     \inputminted{ampl}{../ampl/dual.mod}
 \end{listing}
+Note that we precompute $K = AA^T$ in \texttt{dual.mod} 
+in order to avoid having to compute it in the inner loop
+of the solver.

@@ -1,0 +1,13 @@
+# vim:ft=ampl:
+
+param m := 280;
+param n := 34;
+
+param nu := 1000;
+
+for {i in 1..m} {
+    for {j in 1..n} {
+        read A[i,j] <../data/ionosphere_train.data;
+    }
+    read y[i] <../data/ionosphere_train.data;
+}

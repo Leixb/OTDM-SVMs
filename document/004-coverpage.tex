@@ -59,13 +59,13 @@
 				\draw (x3) -- (x3l) {};
 				\draw (x4) -- (x4r) {};
 				\draw (x5) -- (x5l) {};
-				\node[anchor=north] at ($(x3)!0.5!(x3l)$) {$\xi_3$};
-				\node[anchor=north] at ($(x4)!0.5!(x4r)$) {$\xi_4$};
-				\node[anchor=north] at ($(x5)!0.5!(x5l)$) {$\xi_5$};
+				\node[anchor=north] at ($(x3)!0.5!(x3l)$) {$s_3$};
+				\node[anchor=north] at ($(x4)!0.5!(x4r)$) {$s_4$};
+				\node[anchor=north] at ($(x5)!0.5!(x5l)$) {$s_5$};
 			\end{scope}
 
 			\draw[<->,BrickRed!5,line width=2pt] (-44,\sep) -- (-44,-\sep);
-			\node[BrickRed!9,anchor=south,rotate=\rot+90] at (-44.25,0) {margin\;\; = $\frac{2}{\lVert \omega \rVert}$};
+			\node[BrickRed!9,anchor=south,rotate=\rot+90] at (-44.25,0) {margin\;\; = $\frac{2}{\lVert w \rVert}$};
 
 			\pgfplotsinvokeforeach{0.00,0.1,...,1.00}{
 				\node [leftNode] at (rand*40-20,\sep+rnd*40) {};
@@ -77,9 +77,9 @@
             \coordinate (p-1) at (-70, -\sep);
 
 		\end{scope}
-		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p1) {$\omega^T x + b = 1$};
-		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p0) {$\pi:\,\omega^T x + b = 0$};
-		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p-1) {$\omega^T x + b = -1$};
+		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p1) {$w^T x + \gamma = 1$};
+		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p0) {$\pi:\,w^T x + \gamma = 0$};
+		\node[BrickRed!5,anchor=south east,rotate=\rot] at (p-1) {$w^T x + \gamma = -1$};
 	\end{axis}
 
 	% \foreach \i in {2.5,...,22}

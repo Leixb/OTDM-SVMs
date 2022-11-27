@@ -1,0 +1,17 @@
+nu = 0.1
+
+CPLEX 20.1.0.0: optimal solution; objective 46.75400946
+16 QP barrier iterations
+No basis.
+w [*] :=
+1  2.12687
+2  2.40557
+3  2.13145
+4  2.02338
+;
+
+gamma = -1.0826
+
+correct = 469
+accuracy = 0.938
+

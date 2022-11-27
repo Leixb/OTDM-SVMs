@@ -2,18 +2,19 @@
 
 option solver cplex;
 
-model ./primal.mod;
+model ./dual.mod;
 
 # TRAIN
-data ./train.dat;
+data ./train_ionosphere.dat
 display nu;
 solve;
 
+include ./dual_plane.run;
 display w, gamma;
 
 # TEST
-/* reset data A,y,m; */
-/* data ./test.dat; */
+reset data A,y,m;
+data ./test_ionosphere.dat
 
 include ./accuracy.run;
 display correct, accuracy;

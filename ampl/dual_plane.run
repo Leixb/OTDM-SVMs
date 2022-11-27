@@ -1,0 +1,19 @@
+# vim:ft=ampl:
+
+param w{1..n};
+param gamma;
+
+# Normal vector (w)
+let {j in {1..n}} w[j] := sum{i in 1..m}(lambda[i]*y[i]*A[i,j]);
+
+param n_support default 0;
+# Intercept (gamma)
+for {i in {1..m}} {
+    # We add 1e-2 as tolerance to avoid numerical issues.
+    if (lambda[i] > 1e-2 and nu - lambda[i] > 1e-2) then {
+        let gamma := y[i] - sum{j in 1..n}(w[j]*A[i,j]);
+        break;
+    }
+}
+
+let gamma := gamma/n;

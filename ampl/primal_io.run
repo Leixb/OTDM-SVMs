@@ -1,0 +1,25 @@
+# vim:ft=ampl:
+
+option solver cplex;
+
+model ./primal.mod;
+
+# TRAIN
+data ./train_ionosphere.dat;
+
+display nu;
+
+solve;
+
+display w;
+display gamma;
+
+# TEST
+
+reset data A,y,m;
+
+data ./test_ionosphere.dat;
+include ./accuracy.run;
+
+display correct;
+display accuracy;

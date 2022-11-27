@@ -1,0 +1,7 @@
+# vim:ft=ampl:
+
+param m := 500;
+
+read {i in 1..m}(
+A[i,1], A[i,2], A[i,3], A[i,4], y[i]
+) <../data/test_789453;

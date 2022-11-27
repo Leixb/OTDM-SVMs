@@ -2,13 +2,14 @@
 
 option solver cplex;
 
-model ./primal.mod;
+model ./dual.mod;
 
 # TRAIN
 data ./train.dat;
 display nu;
 solve;
 
+include ./dual_plane.run;
 display w, gamma;
 
 # TEST

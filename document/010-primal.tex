@@ -46,19 +46,19 @@ problem in scalar form.
 
 The scalar form of the primal problem is:
 \begin{align*}
-    \span\min_{
-        (w_i,\gamma,s_i) \in \mathbb{R}^{n+m+1}
-    }
-    \frac{1}{2} \sum_{j=1}^n w_j^2 + \nu \sum_{i=1}^m s_i
-    \\[1.5em]
-    \text{subj. to: } & -Y_i \left( \sum_{j=1}^n A_{ij} w_j + \gamma \right) - s_i + 1 \leq 0 \qquad \forall i \in \{1,\ldots,m\} \\
-                      & -s_i \leq 0 \qquad \forall i \in \{1,\ldots,m\}
+	\span\min_{
+		(w_i,\gamma,s_i) \in \mathbb{R}^{n+m+1}
+	}
+	\frac{1}{2} \sum_{j=1}^n w_j^2 + \nu \sum_{i=1}^m s_i
+	\\[1.5em]
+	\text{subj. to: } & -Y_i \left( \sum_{j=1}^n A_{ij} w_j + \gamma \right) - s_i + 1 \leq 0 \qquad \forall i \in \{1,\ldots,m\} \\
+	                  & -s_i \leq 0 \qquad \forall i \in \{1,\ldots,m\}
 \end{align*}
 
 
 Using this formulation, the translation to AMPL is straightforward:
 \begin{listing}[H]
-    \caption{AMPL Primal SVM model (\texttt{primal.mod})}
-    \inputminted{ampl}{../ampl/primal.mod}
+	\caption{AMPL Primal SVM model (\texttt{primal.mod})}
+	\inputminted{ampl}{../ampl/primal.mod}
 \end{listing}
 

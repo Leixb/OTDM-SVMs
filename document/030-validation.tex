@@ -1,22 +1,149 @@
 %! TEX root = **/000-main.tex
 \chapter{Validation}
 
+\section{Accuracy metric}
+
 To validate our implementation, we
 need to apply it to a dataset and measure
-the performance of the SVM.
+the performance of the SVM. To that end,
+we use the \texttt{accuracy} metric.
 
-To measure the performance, we will use
-\emph{accuracy} on the test set as our metric.
+\subsection{Accuracy on the Primal formulation}
 
-To compute the accuracy in AMPL, we implemented the following
-script:
-\begin{minted}{ampl}
+In order to compute the accuracy, we
+need to know the prediction of the SVM, we
+need to compute the sign of the decision
+function, which is given by:
+\begin{equation*}
+	\label{eq:categories}
+	y_i = \begin{cases}
+        \hphantom{-}1 & \text{if } \sum_{j=1}^n A_{ij} w_j + \gamma \geq 0 \\
+		-1 & \text{otherwise}
+	\end{cases}
+\end{equation*}
 
-\end{minted}
+Using this, we can compute the accuracy in AMPL:
+\begin{listing}[H]
+	\caption{AMPL Accuracy (\texttt{accuracy.run})}
+    \inputminted{ampl}{../ampl/accuracy.run}
+\end{listing}
 
-\section{Provided dataset}
+Note, that this script uses \texttt{A} and \texttt{y}, which
+correspond to the training set. However, we can override
+the values by using \mintinline[firstline=1]{ampl}{reset data A, y}
+and setting the values from the test set. This is done so
+that we can use the same script for both the training and
+test set metrics.
+
+\subsection{Accuracy on the Dual formulation}%
+\label{sec:accuracy-dual}
+
+We can obtain $w$ and $\gamma$ from the dual formulation
+by using the following equations:
+\begin{alignat*}{2}
+    w_j &= \sum_{i=1}^m \lambda_i y_i A_{ij},&\quad j &\in \{1,\ldots,n\} \\
+    % \gamma &= \frac{1}{y_i} - \sum_{j=1}^{n} w_j A_{ij},&\quad j &\in \{1,\ldots,n\},\;i \in SV
+    \gamma &= \frac{1}{n}\left(y_i - \sum_{j=1}^{n} w_j A_{ij}\right),&\quad j &\in \{1,\ldots,n\},\;i \in SV
+\end{alignat*}
+where $SV$ is the set of \emph{support vectors} (i.e. $s_i = 0,\, \lambda_i > 0$).
+
+\begin{listing}[H]
+	\caption{AMPL normal vector and intercept for dual (\texttt{dual\_plane.run})}
+    \label{lst:dual_plane}
+    \inputminted{ampl}{../ampl/dual_plane.run}
+\end{listing}
+
+Once we have the normal vector and the intercept, we can
+compute the accuracy as in the primal case.
+
+\subsection{Equivalence of the primal and dual formulations}
+% Compute the separation hyperplane from the dual model and check that it coincides with that of the primal model.
+Using the computation of the normal vector and the intercept
+from the dual formulation shown in \cref{sec:accuracy-dual},
+we can check that the primal and dual formulations are
+equivalent. That is, the values of $w$ and $\gamma$ should be
+the same in both cases.
+
+
+\pagebreak
+\section{Results}
+
+Now, we can put it all together and run the model on the
+dataset and compute the accuracy on the training and test
+for both the primal and dual formulations.
+
+To run the model, we use the following script:
+\begin{listing}[H]
+    \caption{AMPL script to run the primal model (\texttt{primal.run})}
+    \inputminted{ampl}{../ampl/primal.run}
+\end{listing}
+
+The script for the dual formulation is identical, except
+that we use \mintinline[firstline=1]{ampl}{model ./dual.mod} instead of
+\mintinline[firstline=1]{ampl}{model ./primal.mod} and we add 
+\mintinline[firstline=1]{ampl}{include ./dual_plane.run} after the
+solver call to compute the normal vector and the intercept.
+% \inputminted{ampl}{../ampl/dual.run}
+
+
+\pagebreak
+\subsection{Artificial dataset}
 % Apply to a dataset obtained with the accompanying generator.
 % Validate the SVM with data different from that of the training set.
 
-\section{Other dataset}
+Using the dataset provided with the generator \texttt{gensvmdat},
+we created a training set with $m=1\,000$ samples and a test set
+with $m=500$ samples\footnote{Seeds: 458937 (training), 789453 (test)}.
+
+
+\begin{listing}[H]
+\inputminted[firstline=1,bgcolor=lightcodeBg]{text}{../outputs/primal.out}
+\caption{Primal result (Output of: \texttt{ampl primal.run})}
+\label{lst:res_primal}
+\end{listing}
+
+\begin{listing}[H]
+\inputminted[firstline=1,bgcolor=lightcodeBg]{text}{../outputs/dual.out}
+\caption{Dual result (Output of: \texttt{ampl dual.run})}
+\label{lst:res_dual}
+\end{listing}
+
+As we can see from \cref{lst:res_primal,lst:res_dual},
+the primal and dual formulations have
+reached the same separation hyperplane.
+
+\subsection{Ionosphere dataset}
 % Optionally (but highly recommended for a good mark) you can apply it to other datasets.
+We also applied the model to the well known \emph{Ionosphere} dataset%
+\cite{noauthor_uci_nodate}. This dataset contains $m=351$ samples
+and $n=34$ features. 
+
+The dataset provides radar data and the goal is to classify
+the data as either \emph{good} or \emph{bad}. ``Good'' refers to
+data that shows evidence of an object, while ``bad'' refers to
+data that does not show evidence of an object.
+
+For the purpose of this project, we set the target value of good
+as $y_i = 1$ and the target value of bad as $y_i = -1$.
+
+The target variable, is not evenly distributed, with 225 samples
+being good and 126 samples being bad. Therefore, we used a
+\emph{stratified} 5:1 split to create the training and test sets.
+
+\begin{listing}[H]
+\inputminted[firstline=1,bgcolor=lightcodeBg]{text}{../outputs/primal_io.out}
+\caption{Primal result (Output of: \texttt{ampl primal\_io.run})}
+\label{lst:res_primal_io}
+\end{listing}
+
+\begin{listing}[H]
+\inputminted[firstline=1,bgcolor=lightcodeBg]{text}{../outputs/dual_io.out}
+\caption{Dual result (Output of: \texttt{ampl dual\_io.run})}
+\label{lst:res_dual_io}
+\end{listing}
+
+\Cref{lst:res_primal_io,lst:res_dual_io} show the results of the
+primal and dual formulations on the Ionosphere dataset. As before,
+the primal and dual formulations have reached the same separation
+hyperplane. There are slight differences in the values, but they
+below $10^{-5}$ and do not affect the classification results.

@@ -1,3 +1,5 @@
+# vim:ft=ampl:
+
 param m; # rows
 param n; # columns
 
@@ -13,7 +15,7 @@ var s {1..m}; # slack variables
 
 minimize primal_obj:
     0.5 * sum{j in 1..n}(w[j]^2)
-    + nu * sum{i in 1..m} s[i];
+    + nu * sum{i in 1..m}(s[i]);
 
 subject to primal_c1 {i in 1..m}:
     -y[i]*sum{j in 1..n}(A[i,j]*w[j] + gamma) -s[i] + 1 <= 0;

@@ -1,0 +1,10 @@
+# vim:ft=ampl:
+
+param m := 71;
+
+for {i in 1..m} {
+    for {j in 1..n} {
+        read A[i,j] <../data/ionosphere_test.data;
+    }
+    read y[i] <../data/ionosphere_test.data;
+}

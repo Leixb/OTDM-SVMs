@@ -72,6 +72,21 @@
 \include{030-validation}
 \include{040-separation}
 
+\chapter*{Conclusions}
+\addcontentsline{toc}{chapter}{Conclusions}
+We successfully implemented the primal and dual quadratic formulations of the support vector machine in AMPL.
+We applied the model to a training dataset obtained with the accompanying generator and validated
+it with a test set.
+
+We also applied the model to the \emph{Ionosphere} dataset and obtained good results.
+
+The computed the separation hyperplane from the dual model coincided with that of the primal model.
+However, we had to modify the initial computation of the separation hyperplane to account
+for numerical errors.
+
+For the datasets we used, the primal model was significantly faster than the dual model. However,
+we did not perform any extensive benchmarking and for larger datasets the dual model should be faster.
+
 \nocite{*}
 
 \printbibliography
