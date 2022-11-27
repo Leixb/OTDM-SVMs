@@ -11,9 +11,12 @@ solve;
 
 display w, gamma;
 
+include ./accuracy_primal.run;
+display correct_tr, accuracy_tr;
+
 # TEST
-/* reset data A,y,m; */
-/* data ./test.dat; */
+reset data A,y,m;
+data ./test.dat;
 
 include ./accuracy.run;
 display correct, accuracy;

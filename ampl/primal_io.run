@@ -6,20 +6,17 @@ model ./primal.mod;
 
 # TRAIN
 data ./train_ionosphere.dat;
-
 display nu;
-
 solve;
 
-display w;
-display gamma;
+display w, gamma;
+
+include ./accuracy_primal.run;
+display correct_tr, accuracy_tr;
 
 # TEST
-
 reset data A,y,m;
-
 data ./test_ionosphere.dat;
-include ./accuracy.run;
 
-display correct;
-display accuracy;
+include ./accuracy.run;
+display correct, accuracy;

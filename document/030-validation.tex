@@ -38,6 +38,28 @@ test set metrics.
 \subsection{Accuracy on the Dual formulation}%
 \label{sec:accuracy-dual}
 
+The accuracy on the dual formulation can be computed by
+checking the values of the $\lambda$ variables. We know that
+misclassified points are equal to $\nu$.
+\begin{listing}[H]
+	\caption{AMPL Accuracy for the Dual (\texttt{accuracy\_dual.run})}
+    \label{lst:accuracy-dual}
+    \inputminted{ampl}{../ampl/accuracy_dual.run}
+\end{listing}
+
+\Cref{lst:accuracy-dual} shows the script for computing the accuracy
+on AMPL. We use a tolerance of $10^{-8}$ when checking for
+$\lambda \neq \nu$ to mitigate numerical errors.
+
+However, with this approach, we are not able to compute the
+accuracy on the test set since we do not have access to the
+$\lambda$ variables. In order to compute the accuracy on the
+test set, we need to compute the separation hyperplane ($w$ and $\gamma$)
+of the dual formulation.
+
+\subsection{Separation Hyperplane from the dual}%
+% Compute the separation hyperplane from the dual model and check that it coincides with that of the primal model.
+
 We can obtain $w$ and $\gamma$ from the dual formulation
 by using the following equations:
 \begin{alignat*}{2}
@@ -47,6 +69,11 @@ by using the following equations:
 \end{alignat*}
 where $SV$ is the set of \emph{support vectors} (i.e. $s_i = 0,\, \lambda_i > 0$).
 
+This can be implemented in AMPL as shown in \cref{lst:dual_plane}. Note
+that we use a tolerance of $10^{-2}$ when doing comparisons to mitigate
+numerical errors. The choice of $10^{-2}$ is based on the value that
+we found to give the best results (i.e. equal to the primal formulation)
+in our experiments as we will see in \cref{sec:nu-accuracy}.
 \begin{listing}[H]
 	\caption{AMPL normal vector and intercept for dual (\texttt{dual\_plane.run})}
     \label{lst:dual_plane}
@@ -54,15 +81,16 @@ where $SV$ is the set of \emph{support vectors} (i.e. $s_i = 0,\, \lambda_i > 0$
 \end{listing}
 
 Once we have the normal vector and the intercept, we can
-compute the accuracy as in the primal case.
+compute the accuracy using the same procedure as in
+the primal formulation.
 
-\subsection{Equivalence of the primal and dual formulations}
-% Compute the separation hyperplane from the dual model and check that it coincides with that of the primal model.
+\subsubsection{Equivalence of the primal and dual formulations}%
+
 Using the computation of the normal vector and the intercept
 from the dual formulation shown in \cref{sec:accuracy-dual},
 we can check that the primal and dual formulations are
 equivalent. That is, the values of $w$ and $\gamma$ should be
-the same in both cases.
+the same (within tolerance) in both cases.
 
 
 \pagebreak
@@ -87,7 +115,7 @@ solver call to compute the normal vector and the intercept.
 
 
 \pagebreak
-\subsection{Artificial dataset}
+\subsection{Generated dataset}
 % Apply to a dataset obtained with the accompanying generator.
 % Validate the SVM with data different from that of the training set.
 

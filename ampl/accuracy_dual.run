@@ -1,0 +1,10 @@
+# vim:ft=ampl:
+# accuracy for the dual svm 
+param tol_accuracy := 1e-8;
+
+var correct_tr = sum{i in {1..m}}(
+    # if nu != lambda -> correct
+    if abs(nu - lambda[i]) > tol_accuracy then 1 else 0
+);
+
+var accuracy_tr = correct_tr / m;

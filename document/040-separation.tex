@@ -9,6 +9,7 @@ we decided to write a script to try different values of $\nu$ and
 compare the accuracy and runtime of the models.
 
 \section{Accuracy}
+\label{sec:nu-accuracy}
 
 \begin{figure}[H]
     \begin{tikzpicture}
@@ -28,7 +29,7 @@ compare the accuracy and runtime of the models.
             \addlegendentry{Dual};
         \end{axis}
     \end{tikzpicture}
-    \caption{Accuracy of the primal and dual formulations}
+    \caption{Accuracy of the primal and dual formulations (\emph{Generated} dataset)}
 \end{figure}
 
 For values of $\nu$ between $10^{-2}$ and $10^{4}$, the primal
@@ -72,7 +73,7 @@ Benchmark 1: ampl dual.run
   Time (mean ± σ):      2.519 s ±  0.024 s    [User: 2.161 s, System: 0.390 s]
   Range (min … max):    2.498 s …  2.576 s    10 runs
 \end{minted}
-\caption{Runtime of the primal and dual models for \emph{Ionosphere} dataset}
+\caption{Runtime of the primal and dual models for \emph{Generated} dataset}
 \end{listing}
 
 \begin{listing}[H]

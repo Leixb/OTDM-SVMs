@@ -1,0 +1,11 @@
+# vim:ft=ampl:
+
+param predicted_tr {1..m};
+let {i in {1..m}} predicted_tr[i] :=
+    if sum{j in {1..n}}(A[i,j]*w[j] + gamma) > 0 then 1 else -1;
+
+param correct_tr = sum{i in {1..m}}(
+    if predicted_tr[i] = y[i] then 1 else 0
+);
+
+param accuracy_tr = correct_tr / m;
