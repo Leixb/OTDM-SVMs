@@ -65,6 +65,8 @@
                     include = [
                       "document"
                       "ampl"
+                      "benchmarks"
+                      "outputs"
                     ];
                   };
                   TEXMFHOME = "./cache";
